@@ -3,16 +3,16 @@ language: python
 cache: pip
 # build matrix: different python and pandoc versions
 python:
-  - "2.7"
+#  - "2.7"
   - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.5-dev" # 3.5 development branch
-  - "3.6-dev" # 3.6 development branch
-  - "nightly" # currently points to 3.7-dev
+#  - "3.4"
+#  - "3.5"
+#  - "3.5-dev" # 3.5 development branch
+#  - "3.6-dev" # 3.6 development branch
+#  - "nightly" # currently points to 3.7-dev
   # pypy (version info from [Changelogs — PyPy documentation](http://doc.pypy.org/en/latest/index-of-whatsnew.html))
-  - "pypy"  # PyPy2.7 5.3.1 (CPython 2.7 compatible)
-  - "pypy3" # PyPy3 2.4.0 (CPython 3.2 compatible)
+#  - "pypy"  # PyPy2.7 5.3.1 (CPython 2.7 compatible)
+#  - "pypy3" # PyPy3 2.4.0 (CPython 3.2 compatible)
 env:
   # - pandocVersion=1.13.2
   # - pandocVersion=1.14
@@ -30,7 +30,7 @@ env:
   # - pandocVersion=1.17.0.1
   # - pandocVersion=1.17.0.2
   # - pandocVersion=1.17.1
-  - pandocVersion=1.17.2
+#  - pandocVersion=1.17.2
   # - pandocVersion=1.18
   - pandocVersion=latest
 matrix:
@@ -60,8 +60,7 @@ before_install:
     path=$(curl -L $url | grep -o '/jgm/pandoc/releases/download/.*-amd64\.deb')
     downloadUrl="https://github.com$path"
     file=${path##*/}
-    #
-    SETUPTOOLS_VERSION=`pip show setuptools | grep Version: | cut -d' ' -f2`
+    SETUPTOOLS_VERSION=$(pip show setuptools | grep "^Version:" | cut -d' ' -f2)
 # install dependencies
 install:
   # pandoc
@@ -70,9 +69,10 @@ install:
   # latest pip dropped support for py3.2, which is the version of python in pypy3
   - if [[ "$TRAVIS_PYTHON_VERSION" != "pypy3" ]]; then pip install -U pip; fi
   # setup.py requires a minimum version of setuptools.  The virtual environments
-  # of some of the python versions does not have a suficiently new setuptools
+  # of some of the python versions does not have a sufficiently new setuptools
   # version.
   - dpkg --compare-versions ${SETUPTOOLS_VERSION} lt 20.6.8 && pip install -U setuptools || echo "Setuptools ${SETUPTOOLS_VERSION} is suficiently new (>=20.6.8)"
+
   - pip install -e .[test]
 before_script:
   # pasteurize for py2 only, except setup.py & pantable/version.py
